@@ -10,13 +10,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SearchResultActivity"></activity>
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".SearchActivity" />
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".NotificationActivity"></activity>
         <activity
-            android:name=".SplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".SearchResultActivity"/>
+        <activity android:name=".DetailActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".SearchActivity"/>
+        <activity
+            android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

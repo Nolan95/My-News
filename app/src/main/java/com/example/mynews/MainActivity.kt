@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.example.mynews.utils.*
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         adapter.addFragment(firstFragmet, TOPSTORIES)
         adapter.addFragment(secondFragmet, MOSTPOPULAR)
         adapter.addFragment(thirdFragment, BUSINESS)
+
+        viewpager.offscreenPageLimit = 3
 
         viewpager.adapter = adapter
 
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.notif -> {
-
+                startActivity(Intent(this, NotificationActivity::class.java))
             }
 
             R.id.help -> {

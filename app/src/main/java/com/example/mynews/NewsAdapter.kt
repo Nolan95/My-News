@@ -6,16 +6,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynews.data.Result
+import com.example.mynews.extensions.addOnItemClickListener
 import com.example.mynews.utils.URL
 import com.squareup.picasso.Picasso
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import com.example.mynews.utils.*
 
 
-class NewsAdapter(private var context: Context, private var items: List<Result> = listOf()) : RecyclerView.Adapter<NewsViewHolder>() {
+class NewsAdapter(private var items: List<Result> = listOf(),
+                  val onItemClickListener: OnItemClicked) : RecyclerView.Adapter<NewsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -26,9 +30,17 @@ class NewsAdapter(private var context: Context, private var items: List<Result> 
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val item = items[position]
-        holder.section.text = item.section
-        holder.title.text = item.title
-        holder.date.text = formatDate(item.published_date)
+        item.section?.let {
+            holder.section.text = item.section
+            holder.title.text = item.title
+            holder.date.text = formatDate(item.published_date)
+        }
+        item.section_name?.let {
+            holder.section.text = item.section_name
+            holder.title.text = item.snippet
+            holder.date.text = formatDate(item.pub_date)
+        }
+
         item.multimedia?.let {
             if(item.multimedia.isNotEmpty()) Picasso.get().load(item.multimedia.first().url).into(holder.image)
         }
@@ -36,12 +48,8 @@ class NewsAdapter(private var context: Context, private var items: List<Result> 
             if(item.media.isNotEmpty()) Picasso.get().load(item.media.first().mediaMetadata.first().url).into(holder.image)
         }
 
-        holder.cardView.setOnClickListener(){
-            val url = getUrl(position)
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(URL, url)
-            context.startActivity(intent)
-        }
+        holder.addOnItemClickListener(onItemClickListener, item)
+
     }
 
 
@@ -50,32 +58,9 @@ class NewsAdapter(private var context: Context, private var items: List<Result> 
         return items.size
     }
 
-    fun replaceItems(items: List<Result>) {
-        this.items = items
-        notifyDataSetChanged()
-    }
 
-    fun addContext(context: Context?){}
-
-
-    private fun formatDate(date: String): String {
-        val dateFormat = listOf("yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ssZ")
-        for (formatString in dateFormat) {
-            try {
-                val parser = SimpleDateFormat(formatString)
-                val formatter = SimpleDateFormat("dd/MM/yy")
-                val output = formatter.format(parser.parse(date))
-                return output
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-
-        }
-        return ""
-    }
-
-    fun getUrl(position: Int): String {
-        return items[position].url
+    interface OnItemClicked{
+        fun onItemClick(item: Result)
     }
 
 }
