@@ -4,6 +4,7 @@ import androidx.annotation.Nullable
 import com.example.mynews.data.DataResults
 import com.example.mynews.data.SearchData
 import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,6 +29,12 @@ interface NewsApiService {
     @GET("topstories/v2/{section}.json")
     fun getTopStories(@Path("section") section: String,
                       @Query("api-key") api_key: String) : Observable<DataResults>
+
+    @GET("search/v2/articlesearch.json")
+    fun getNews(@Query("q") q: String,
+                  @Query("fq") fq: List<String>,
+                  @Query("api-key") api_key: String) : Single<SearchData>
+
 
     companion object {
         fun create(): NewsApiService {

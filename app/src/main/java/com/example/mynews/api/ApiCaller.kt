@@ -6,6 +6,7 @@ import com.example.mynews.data.DataResults
 import com.example.mynews.data.SearchData
 import com.example.mynews.utils.API_KEY
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -34,6 +35,10 @@ class ApiCaller {
         return newsApiService.getSearch(q, fq, API_KEY)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun getNotified(q: String, fq: List<String>): Single<SearchData> {
+        return newsApiService.getNews(q, fq, API_KEY)
     }
 
 }

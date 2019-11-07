@@ -18,8 +18,8 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:layout_margin="@dimen/margin">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -38,6 +38,92 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <CheckBox
+                android:id="@+id/art"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/arts"
+                app:layout_constraintStart_toStartOf="@+id/query"
+                app:layout_constraintTop_toBottomOf="@+id/query" />
+
+            <CheckBox
+                android:id="@+id/business"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/business"
+                app:layout_constraintStart_toStartOf="@+id/art"
+                app:layout_constraintTop_toBottomOf="@+id/art" />
+
+            <CheckBox
+                android:id="@+id/entrepreneurs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/entrepreneurs"
+                app:layout_constraintStart_toStartOf="@+id/business"
+                app:layout_constraintTop_toBottomOf="@+id/business" />
+
+            <CheckBox
+                android:id="@+id/politics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="172dp"
+                android:layout_marginLeft="172dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/politics"
+                app:layout_constraintStart_toEndOf="@+id/art"
+                app:layout_constraintTop_toBottomOf="@+id/query" />
+
+            <CheckBox
+                android:id="@+id/sports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/sports"
+                app:layout_constraintStart_toStartOf="@+id/politics"
+                app:layout_constraintTop_toBottomOf="@+id/politics" />
+
+            <CheckBox
+                android:id="@+id/travel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/travel"
+                app:layout_constraintStart_toStartOf="@+id/sports"
+                app:layout_constraintTop_toBottomOf="@+id/sports" /><![CDATA[
+            />
+            ]]>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/background_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/travel" />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="24dp"
+                android:text="Switch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/view"
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                app:layout_constraintVertical_bias="0.6" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

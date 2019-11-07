@@ -16,9 +16,7 @@ import com.example.mynews.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.toolbar.*
 
-class SearchResultActivity : AppCompatActivity(), NewsAdapter.OnItemClicked {
-
-    private var linearLayoutManager: LinearLayoutManager? = null
+class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClicked {
 
     private var disposable: Disposable? = null
 
@@ -26,9 +24,9 @@ class SearchResultActivity : AppCompatActivity(), NewsAdapter.OnItemClicked {
 
     private lateinit var recyclerView: RecyclerView
 
-    var news: MutableList<Result> = mutableListOf()
+    var news: MutableList<Doc> = mutableListOf()
 
-    private lateinit var newsAdapter: NewsAdapter
+    private lateinit var searchResultAdapter: SearchResultAdapter
 
     private lateinit var swipe: SwipeRefreshLayout
 
@@ -40,20 +38,20 @@ class SearchResultActivity : AppCompatActivity(), NewsAdapter.OnItemClicked {
         title = getString(R.string.search_result)
         toolBarConfig()
         setContent()
-        newsAdapter = NewsAdapter(news, this)
+        searchResultAdapter = SearchResultAdapter(news, this)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = newsAdapter
+            adapter = searchResultAdapter
         }
         onSwipeRefreshLayout()
         setContent()
     }
 
 
-    override fun onItemClick(item: Result) {
+    override fun onItemClick(item: Doc) {
         startActivity(Intent(this, DetailActivity::class.java)
             .putExtra(URL, item.web_url)
-            .putExtra(TITLE, item.title))
+            .putExtra(TITLE, item.snippet))
     }
 
 
@@ -77,12 +75,12 @@ class SearchResultActivity : AppCompatActivity(), NewsAdapter.OnItemClicked {
             )
     }
 
-    private fun replaceItems(docs: List<Result>) {
+    private fun replaceItems(docs: List<Doc>) {
         if(docs.isNotEmpty()){
             news.clear()
             news.addAll(docs)
         }
-        newsAdapter.notifyDataSetChanged()
+        searchResultAdapter.notifyDataSetChanged()
     }
 
     private fun toolBarConfig() {

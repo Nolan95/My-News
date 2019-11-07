@@ -10,7 +10,6 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynews.data.Result
-import com.example.mynews.extensions.addOnItemClickListener
 import com.example.mynews.utils.URL
 import com.squareup.picasso.Picasso
 import java.text.ParseException
@@ -44,11 +43,16 @@ class NewsAdapter(private var items: List<Result> = listOf(),
         item.multimedia?.let {
             if(item.multimedia.isNotEmpty()) Picasso.get().load(item.multimedia.first().url).into(holder.image)
         }
+//        item.multimediaX?.let {
+//            if(item.multimediaX.isNotEmpty()) Picasso.get().load(item.multimediaX.first().url).into(holder.image)
+//        }
         item.media?.let {
             if(item.media.isNotEmpty()) Picasso.get().load(item.media.first().mediaMetadata.first().url).into(holder.image)
         }
 
-        holder.addOnItemClickListener(onItemClickListener, item)
+        holder.cardView.setOnClickListener{
+            onItemClickListener.onItemClick(item)
+        }
 
     }
 

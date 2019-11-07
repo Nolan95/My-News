@@ -1,6 +1,6 @@
 package com.example.mynews.data
 
 data class Response(
-    val docs: List<Result>,
+    val docs: List<Doc>,
     val meta: Meta
 )
