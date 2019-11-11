@@ -1,16 +1,14 @@
-package com.example.mynews.api
+package com.example.mynews.repository.api
 
-import android.util.Log
-import com.example.mynews.NewsAdapter
-import com.example.mynews.data.DataResults
-import com.example.mynews.data.SearchData
+import com.example.mynews.repository.api.NewsApiService
+import com.example.mynews.repository.data.DataResults
+import com.example.mynews.repository.data.SearchData
 import com.example.mynews.utils.API_KEY
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
+import retrofit2.Response
 
 class ApiCaller {
 
@@ -20,15 +18,12 @@ class ApiCaller {
 
     fun fetchTopStories(section: String): Observable<DataResults> {
         return  newsApiService.getTopStories(section, API_KEY)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun  fetchMostPopular(period: Int): Observable<DataResults> {
         return newsApiService.getMostPopularNews(period, API_KEY)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-
     }
 
     fun fetchSearchResult(q: String, fq: List<String>): Observable<SearchData> {

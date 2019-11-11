@@ -5,10 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.example.mynews.utils.*
+import com.example.mynews.workmanager.DbPopulateWorker
+import com.example.mynews.workmanager.NewsFetchingWorker
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = TabAdapter(getSupportFragmentManager())
 
+
         var firstFragmet: TopStoriesFragment = TopStoriesFragment.newInstance(TOPSTORIES)
         var secondFragmet: TopStoriesFragment = TopStoriesFragment.newInstance(MOSTPOPULAR)
         var thirdFragment: TopStoriesFragment = TopStoriesFragment.newInstance(BUSINESS)
@@ -37,25 +45,6 @@ class MainActivity : AppCompatActivity() {
         viewpager.adapter = adapter
 
         sliding_tabs.setupWithViewPager(viewpager)
-        sliding_tabs.addOnTabSelectedListener(object :
-            TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                when(tab.position){
-                    0 -> {
-
-                    }
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

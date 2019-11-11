@@ -1,9 +1,11 @@
-package com.example.mynews.data
+package com.example.mynews.repository.data
+
+import androidx.room.*
+import kotlinx.android.parcel.IgnoredOnParcel
 
 data class Result(
     val `abstract`: String = "",
-    val multimedia: List<MultimediaX>? = null,
-    val media: List<MediaX>? = null,
+    val dataResultsId: Int,
     val published_date: String = "",
     val section: String = "",
     val short_url: String = "",
@@ -18,6 +20,7 @@ data class Result(
     val section_name: String = "",
     val web_url: String = "",
     val subsection_name: String = "",
-    val snippet: String = ""
-
+    val snippet: String = "",
+    val multimedia: List<MultimediaX>? = null,
+    val media: List<MediaX>? = null
 )

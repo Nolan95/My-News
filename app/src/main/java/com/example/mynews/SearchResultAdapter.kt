@@ -3,7 +3,7 @@ package com.example.mynews
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mynews.data.Doc
+import com.example.mynews.repository.data.Doc
 import com.squareup.picasso.Picasso
 import com.example.mynews.utils.*
 

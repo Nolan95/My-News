@@ -1,12 +1,12 @@
-package com.example.mynews.api
+package com.example.mynews.repository.api
 
-import androidx.annotation.Nullable
-import com.example.mynews.data.DataResults
-import com.example.mynews.data.SearchData
+import com.example.mynews.repository.data.DataResults
+import com.example.mynews.repository.data.SearchData
 import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

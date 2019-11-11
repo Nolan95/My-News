@@ -3,18 +3,19 @@ package com.example.mynews.workmanager
 import android.content.Context
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
-import com.example.mynews.api.ApiCaller
+import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.utils.FQ
-import com.example.mynews.utils.NEWS
 import com.example.mynews.utils.QUERY
 import io.reactivex.Single
 import android.app.NotificationManager
 import android.app.NotificationChannel
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.mynews.R
-import com.example.mynews.data.Doc
+import com.example.mynews.repository.data.Doc
+import com.example.mynews.extensions.fromStringToArray
+import com.example.mynews.utils.NOTIF
 
 
 class NewsFetchingWorker(context: Context,
@@ -22,14 +23,15 @@ class NewsFetchingWorker(context: Context,
 
     val apiCaller = ApiCaller()
 
+    val sharedPreferences: SharedPreferences = context.getSharedPreferences(NOTIF, Context.MODE_PRIVATE)
     override fun createWork(): Single<Result> {
-        val query = inputData.getString(QUERY)!!
-        val fq = inputData.getStringArray(FQ)
-        return apiCaller.getNotified(query, fq as List<String>)
+        val query = sharedPreferences.getString(QUERY, "")
+        val fq = sharedPreferences.getString(FQ, "")
+
+        return apiCaller.getNotified(query!!, fq?.fromStringToArray(",")!!)
             .map {
-                val outputData= workDataOf(NEWS to it.response.docs)
                 showNotification(it.response.docs)
-                Result.success(outputData)
+                Result.success()
             }
     }
 

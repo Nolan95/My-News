@@ -1,4 +1,4 @@
-package com.example.mynews.data
+package com.example.mynews.repository.data
 
 data class Meta(
     val hits: Int,

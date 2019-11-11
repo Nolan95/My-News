@@ -1,10 +1,9 @@
 package com.example.mynews
 
-import android.app.DatePickerDialog
-import android.content.Intent
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
 import android.widget.CheckBox
@@ -13,53 +12,64 @@ import androidx.work.*
 import com.example.mynews.utils.*
 import com.example.mynews.workmanager.NewsFetchingWorker
 import kotlinx.android.synthetic.main.activity_notification.*
-import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.activity_search.query
 import kotlinx.android.synthetic.main.toolbar.*
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import android.widget.CompoundButton
+import com.example.mynews.extensions.fromArrayToString
+
 
 class NotificationActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.notifications)
 
+        sharedPreferences = getSharedPreferences(NOTIF, Context.MODE_PRIVATE)
+
+        val allCheckboxId = listOf<CheckBox>(art, business, entrepreneurs,politics, sports,travel)
+
+        handleClickListener(allCheckboxId)
     }
 
     private fun handleClickListener(allCheckboxId: List<CheckBox>){
 
-       if(switch3.isChecked){
-           val checklist = getSelectedCheckbox(allCheckboxId)
-           if(!query.text.toString().equals("")){
-               if(checklist.isNotEmpty()){
-                   val constraints = Constraints.Builder()
-                       .setRequiredNetworkType(NetworkType.CONNECTED)
-                       .build()
-                   val query = workDataOf(QUERY to query.text)
-                   val fq = workDataOf(FQ to checklist)
+        switch3.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener {buttonView, isChecked ->
+           if(isChecked){
+               val checklist = getSelectedCheckbox(allCheckboxId)
+               if(!query.text.toString().equals("")){
+                   if(checklist.isNotEmpty()){
+                       val constraints = Constraints.Builder()
+                           .setRequiredNetworkType(NetworkType.CONNECTED)
+                           .build()
 
-                   // Create periodic worker with contraints & 12 hours interval
-                   val newsFetchingWorker = PeriodicWorkRequest.Builder(
-                       NewsFetchingWorker::class.java, 12, TimeUnit.HOURS)
-                       .setConstraints(constraints)
-                       .setInputData(query)
-                       .setInputData(fq)
-                       .build()
+                       sharedPreferences.edit().apply{
+                            putString(QUERY, query.text.toString())
+                            putString(FQ, checklist.fromArrayToString())
+                       }.apply()
 
-                   WorkManager.getInstance().enqueue(newsFetchingWorker)
+                       // Create periodic worker with contraints & 12 hours interval
+                       val newsFetchingWorker = PeriodicWorkRequest.Builder(
+                           NewsFetchingWorker::class.java, 2, TimeUnit.MINUTES)
+                           .setConstraints(constraints)
+                           .build()
+
+                       WorkManager.getInstance().enqueue(newsFetchingWorker)
+                   }else{
+                       Toast.makeText(this, "Select at least one category", Toast.LENGTH_LONG).show()
+                   }
                }else{
-                   Toast.makeText(this, "Select at least one category", Toast.LENGTH_LONG).show()
+                   Toast.makeText(this, "Query term can't be blank", Toast.LENGTH_LONG).show()
                }
-           }else{
-               Toast.makeText(this, "Query term can't be blank", Toast.LENGTH_LONG).show()
            }
-       }
 
+       })
 
     }
 

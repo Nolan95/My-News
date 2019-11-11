@@ -5,13 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.mynews.api.ApiCaller
-import com.example.mynews.data.Doc
-import com.example.mynews.data.Result
+import com.example.mynews.repository.api.ApiCaller
+import com.example.mynews.repository.data.Doc
 import com.example.mynews.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.toolbar.*
@@ -20,7 +18,8 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
 
     private var disposable: Disposable? = null
 
-    private val apiCaller: ApiCaller = ApiCaller()
+    private val apiCaller: ApiCaller =
+        ApiCaller()
 
     private lateinit var recyclerView: RecyclerView
 

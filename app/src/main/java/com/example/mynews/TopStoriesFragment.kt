@@ -1,7 +1,6 @@
 package com.example.mynews
 
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,18 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.mynews.api.ApiCaller
-import com.example.mynews.api.NewsApiService
-import com.example.mynews.data.Result
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import com.example.mynews.repository.NewsRepository
+import com.example.mynews.repository.api.ApiCaller
+import com.example.mynews.repository.data.Result
+import com.example.mynews.repository.db.AppDatabase
 import com.example.mynews.utils.*
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.example.mynews.viewmodel.NewsViewModel
+import com.example.mynews.workmanager.DbPopulateWorker
+import com.google.android.gms.common.api.Api
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_tab.*
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -33,15 +42,22 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
 
     private var disposable: Disposable? = null
 
-    private val apiCaller: ApiCaller = ApiCaller()
+    private val apiCaller: ApiCaller =
+        ApiCaller()
 
     private lateinit var recyclerView: RecyclerView
 
-    var news: MutableList<Result> = mutableListOf()
+    var news: MutableList<Any> = mutableListOf()
 
     private lateinit var newsAdapter: NewsAdapter
 
     private lateinit var swipe: SwipeRefreshLayout
+
+    private lateinit var newsViewModel: NewsViewModel
+
+//    val db = AppDatabase.getDatabase(context!!)!!
+
+    lateinit var newsRepository: NewsRepository
 
     companion object {
         fun newInstance(tabTitle: String): TopStoriesFragment {
@@ -68,6 +84,10 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
         val view: View =  inflater.inflate(R.layout.fragment_tab, container, false)
         recyclerView = view.findViewById(R.id.recycler)
         swipe = view.findViewById(R.id.swipe)
+        newsViewModel = ViewModelProviders.of(this).get(NewsViewModel::class.java)
+        newsRepository = NewsRepository(newsViewModel.db)
+
+
         setTabContent()
         newsAdapter = NewsAdapter(news, this)
         recyclerView.apply {
@@ -94,7 +114,6 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
             when(tabTitle){
                 TOPSTORIES -> topStories("home")
                 MOSTPOPULAR -> mostPopular(7)
-                BUSINESS -> topBusiness("business")
 
             }
         }
@@ -102,21 +121,30 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
 
 
 
-    private fun topBusiness(section: String) {
-        disposable = apiCaller.fetchTopStories(section)
-            .subscribe(
-                { replaceItems(it.results) },
-                { Toast.makeText(context, "Error${it.message}", Toast.LENGTH_LONG).show() }
-            )
-    }
+//    private fun topBusiness(section: String) {
+//        disposable = apiCaller.fetchTopStories(section)
+//            .subscribe(
+//                { replaceItems(it.results) },
+//                { Toast.makeText(context, "Error${it.message}", Toast.LENGTH_LONG).show() }
+//            )
+//    }
 
 
     private fun topStories(section: String){
-        disposable = apiCaller.fetchTopStories(section)
-            .subscribe(
-                { replaceItems(it.results) },
-                { Toast.makeText(context, "Error${it.message}", Toast.LENGTH_LONG).show() }
+
+        disposable = newsRepository.saveFromApiToDb(section)
+            .subscribe({
+                newsRepository.topStoriesRepository.storeResultInDbTopStories(it)
+            },
+            { Log.i("Stories", "${it.message}")}
             )
+
+        newsViewModel.AllTopStories.observe(this, Observer { stories ->
+            // Update the cached copy of the words in the adapter.
+            if(stories != null){ replaceItems(stories)}else{
+                Toast.makeText(context, "Stories vides", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun mostPopular(period: Int){
@@ -134,7 +162,7 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
             .putExtra(TITLE, item.title))
     }
 
-    fun replaceItems(items: List<Result>) {
+    fun replaceItems(items: List<Any>) {
         if(items.isNotEmpty()){
             news.clear()
             news.addAll(items)
