@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.mynews.repository.NewsRepository
+import com.example.mynews.repository.data.Doc
 import com.example.mynews.repository.roomdata.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -18,35 +19,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun mediaDao(): MediaDao
     abstract fun multimediaXDao(): MultimediaXDao
     abstract fun mediaMetadataDao(): MediaMetaDao
-
-
-//    private class WordDatabaseCallback(
-//        private val scope: CoroutineScope
-//    ) : RoomDatabase.Callback() {
-//
-//        override fun onOpen(db: SupportSQLiteDatabase) {
-//            super.onOpen(db)
-//            INSTANCE?.let { database ->
-//                scope.launch {
-//                    var topArticlesDao = database.topArticlesDao()
-//                    val newsRepository = NewsRepository(database)
-//
-//                    try {
-//                        val primaryNewsResponse = newsRepository.saveFromApiToDb("home")
-//                        if (primaryNewsResponse.isSuccessful) {
-//                            newsRepository.topStoriesRepository.storeResultInDbTopStories(primaryNewsResponse.body()!!)
-//                            Log.i("Db", "Hello**************")
-//                            //Do your thing
-//                        } else {
-//                            //Handle unsuccessful response
-//                        }
-//                    } catch (e: Exception) {
-//                        //Handle error
-//                    }
-//                }
-//            }
-//        }
-//    }
+    abstract fun sharedArticleDao(): SharedArticleDao
+    abstract fun docDao(): DocDao
+    abstract fun multimediaDao(): MultimediaDao
 
     companion object {
 

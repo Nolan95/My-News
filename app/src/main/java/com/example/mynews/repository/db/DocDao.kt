@@ -1,5 +1,6 @@
 package com.example.mynews.repository.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,11 +13,12 @@ import io.reactivex.Single
 interface DocDao{
 
     @Query("SELECT * FROM docs")
-    fun getAllDocs(): Single<List<DocEntity>>
+    fun getAllDocs(): List<DocEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(docs: List<DocEntity>)
 
-    @Query("SELECT * FROM docs WHERE docId = :id")
-    fun getDoc(id: Int)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDoc(doc: DocEntity): Long
+
 }

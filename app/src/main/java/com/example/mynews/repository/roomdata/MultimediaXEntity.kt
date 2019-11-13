@@ -8,7 +8,7 @@ import com.example.mynews.repository.data.Doc
     foreignKeys = arrayOf(
     ForeignKey(
         entity = TopArticles::class,
-        parentColumns = arrayOf("topArticlesId"),
+        parentColumns = arrayOf("id"),
         childColumns = arrayOf("top_articles_id")
     )
 ))
@@ -16,7 +16,7 @@ data class MultimediaXEntity(
     @PrimaryKey(autoGenerate = true)
     var multimediaxId: Int = 0,
     @ColumnInfo(name = "top_articles_id")
-    var topArticlesId: Int = 0,
+    var topArticlesId: Long = 0,
     var type: String = "",
     var url: String = ""
 )

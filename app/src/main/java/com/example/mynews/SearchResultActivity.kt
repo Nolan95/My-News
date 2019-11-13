@@ -8,10 +8,15 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.mynews.repository.NewsRepository
 import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.repository.data.Doc
+import com.example.mynews.repository.db.AppDatabase
+import com.example.mynews.repository.roomdata.DocEntity
 import com.example.mynews.utils.*
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.toolbar.*
 
 class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClicked {
@@ -29,6 +34,8 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
 
     private lateinit var swipe: SwipeRefreshLayout
 
+    lateinit var newsRepository: NewsRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_result)
@@ -36,6 +43,10 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
         recyclerView = findViewById(R.id.recycler)
         title = getString(R.string.search_result)
         toolBarConfig()
+        val db = AppDatabase.getDatabase(this)
+        db?.let {
+            newsRepository = NewsRepository(db)
+        }
         setContent()
         searchResultAdapter = SearchResultAdapter(news, this)
         recyclerView.apply {
@@ -67,10 +78,13 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
         val beginDate = intent.getStringExtra(BEGIN_DATE)
         val endDate = intent.getStringExtra(END_DATE)
         Log.i("Date", "${beginDate}")
-        disposable = apiCaller.fetchSearchResult(q,fq)
-            .subscribe(
-                { replaceItems(it.response.docs )},
-                { Log.i("search", "Error${it.message}")}
+        disposable = newsRepository.searchResultFromApi(q, fq)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                replaceItems(it.response.docs)
+            },
+                { Log.i("Stories", "${it.message}")}
             )
     }
 

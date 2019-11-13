@@ -1,5 +1,6 @@
 package com.example.mynews.repository.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,8 +11,10 @@ import com.example.mynews.repository.roomdata.MediaEntity
 @Dao
 interface MediaDao {
     @Query("SELECT * FROM medias WHERE shared_article_id = :sharedArticlesId")
-    fun getMedias(sharedArticlesId: Int): List<MediaEntity>
+    fun getMedias(sharedArticlesId: Long): LiveData<List<MediaEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMedias(medias: List<MediaEntity>)
+    fun insertMedias(medias: MediaEntity): Long
+
+
 }

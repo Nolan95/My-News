@@ -1,5 +1,6 @@
 package com.example.mynews.repository.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +12,7 @@ import com.example.mynews.repository.roomdata.MultimediaXEntity
 interface MultimediaXDao {
 
     @Query("SELECT * FROM multimediax WHERE top_articles_id = :topArticlesId")
-    fun getMultimediax(topArticlesId: Int): List<MultimediaXEntity>
+    fun getMultimediax(topArticlesId: Long): LiveData<List<MultimediaXEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllMultimediax(multimediax: List<MultimediaXEntity>?)

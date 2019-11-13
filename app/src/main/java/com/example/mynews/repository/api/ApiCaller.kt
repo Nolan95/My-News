@@ -22,14 +22,10 @@ class ApiCaller {
 
     fun  fetchMostPopular(period: Int): Observable<DataResults> {
         return newsApiService.getMostPopularNews(period, API_KEY)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun fetchSearchResult(q: String, fq: List<String>): Observable<SearchData> {
         return newsApiService.getSearch(q, fq, API_KEY)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getNotified(q: String, fq: List<String>): Single<SearchData> {

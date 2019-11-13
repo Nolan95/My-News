@@ -25,6 +25,8 @@ import com.example.mynews.repository.NewsRepository
 import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.repository.data.Result
 import com.example.mynews.repository.db.AppDatabase
+import com.example.mynews.repository.roomdata.SharedArticle
+import com.example.mynews.repository.roomdata.TopArticles
 import com.example.mynews.utils.*
 import com.example.mynews.viewmodel.NewsViewModel
 import com.example.mynews.workmanager.DbPopulateWorker
@@ -114,6 +116,7 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
             when(tabTitle){
                 TOPSTORIES -> topStories("home")
                 MOSTPOPULAR -> mostPopular(7)
+                BUSINESS -> topStories("business")
 
             }
         }
@@ -121,45 +124,50 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
 
 
 
-//    private fun topBusiness(section: String) {
-//        disposable = apiCaller.fetchTopStories(section)
-//            .subscribe(
-//                { replaceItems(it.results) },
-//                { Toast.makeText(context, "Error${it.message}", Toast.LENGTH_LONG).show() }
-//            )
-//    }
-
-
     private fun topStories(section: String){
 
-        disposable = newsRepository.saveFromApiToDb(section)
-            .subscribe({
-                newsRepository.topStoriesRepository.storeResultInDbTopStories(it)
-            },
-            { Log.i("Stories", "${it.message}")}
-            )
-
-        newsViewModel.AllTopStories.observe(this, Observer { stories ->
+        newsViewModel.allStoriesBySection(section).observe(this, Observer { stories ->
             // Update the cached copy of the words in the adapter.
-            if(stories != null){ replaceItems(stories)}else{
+            if(stories != null){
+                replaceItems(stories)
+            }else{
                 Toast.makeText(context, "Stories vides", Toast.LENGTH_LONG).show()
             }
         })
+
+        newsViewModel.newsRepository.saveFromApiToDb(section)
     }
+
 
     private fun mostPopular(period: Int){
-        disposable = apiCaller.fetchMostPopular(period)
-            .subscribe(
-                { replaceItems(it.results) },
-                { Toast.makeText(context, "Error${it.message}", Toast.LENGTH_LONG).show() }
-            )
+        newsViewModel.mostPopular().observe(this, Observer { stories ->
+            // Update the cached copy of the words in the adapter.
+            if(stories != null){
+                replaceItems(stories)
+            }else{
+                Toast.makeText(context, "Stories vides", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        newsViewModel.newsRepository.saveFromApiToDbMostPopular(period)
     }
 
 
-    override fun onItemClick(item: Result) {
-        context?.startActivity(Intent(context, DetailActivity::class.java)
-            .putExtra(URL, item.url)
-            .putExtra(TITLE, item.title))
+    override fun onItemClick(item: Any) {
+        when(item){
+            is TopArticles -> {
+                context?.startActivity(Intent(context, DetailActivity::class.java)
+                    .putExtra(URL, item.url)
+                    .putExtra(TITLE, item.title))
+            }
+
+            is SharedArticle -> {
+                context?.startActivity(Intent(context, DetailActivity::class.java)
+                    .putExtra(URL, item.url)
+                    .putExtra(TITLE, item.title))
+            }
+        }
+
     }
 
     fun replaceItems(items: List<Any>) {

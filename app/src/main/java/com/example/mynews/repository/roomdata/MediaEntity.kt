@@ -18,9 +18,9 @@ import com.google.gson.annotations.SerializedName
 
 data class MediaEntity(
     @PrimaryKey(autoGenerate = true)
-    var mediaId: Int = 0,
+    var mediaId: Long = 0,
     @Ignore
-    @SerializedName("media-metadata") var mediaMetadata: List<MediaMetadata> = listOf(),
+    @SerializedName("media-metadata") var mediaMetadata: List<MediaMetaEntity> = listOf(),
     @ColumnInfo(name="shared_article_id")
-    var sharedArticleId: Int = 0
+    var sharedArticleId: Long = 0
 )

@@ -15,11 +15,11 @@ import com.example.mynews.repository.data.MediaX
 
 data class MediaMetaEntity(
     @PrimaryKey(autoGenerate = true)
-    val metaId: Int = 0,
+    var metaId: Long = 0,
     @ColumnInfo(name="media_id")
-    val mediaId: Int = 0,
-    val format: String = "",
-    val height: Int = 0,
-    val url: String = "",
-    val width: Int = 0
+    var mediaId: Long = 0,
+    var format: String = "",
+    var height: Int = 0,
+    var url: String = "",
+    var width: Int = 0
 )

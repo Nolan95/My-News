@@ -8,8 +8,6 @@ import com.example.mynews.repository.data.MultimediaX
 
 @Entity(tableName = "toparticles")
 data class TopArticles(
-    @PrimaryKey(autoGenerate = true)
-    var topArticlesId: Int = 0,
     var published_date: String = "",
     var section: String = "",
     var short_url: String = "",
@@ -17,7 +15,9 @@ data class TopArticles(
     var title: String = "",
     var updated_date: String = "",
     var url: String = "",
-    var id: Long = 0,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
     var views: Int = 0,
-    var source: String = ""
+    var source: String = "",
+    var type: String = "",
+    @Ignore var multimedia: List<MultimediaXEntity> = listOf()
 )

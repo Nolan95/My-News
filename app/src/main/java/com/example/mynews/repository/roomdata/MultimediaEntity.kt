@@ -14,9 +14,9 @@ import com.example.mynews.repository.data.Doc
 ))
 data class MultimediaEntity(
     @PrimaryKey(autoGenerate = true)
-    var multimediaId: Int = 0,
+    var multimediaId: Long = 0,
     @ColumnInfo(name = "doc_id")
-    var docId: Int = 0,
+    var docId: Long = 0,
     var type: String = "",
     var url: String = ""
 )

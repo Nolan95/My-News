@@ -1,5 +1,6 @@
 package com.example.mynews.repository.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +12,7 @@ import com.example.mynews.repository.roomdata.MediaMetaEntity
 interface MediaMetaDao {
 
     @Query("SELECT * FROM mediametas WHERE media_id = :mediaId")
-    fun getMediaMeta(mediaId: Int): List<MediaMetaEntity>
+    fun getMediaMeta(mediaId: Long): LiveData<List<MediaMetaEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllMediaMeta(mediaMeta: List<MediaMetaEntity>)
