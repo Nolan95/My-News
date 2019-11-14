@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.ActionBar
+import androidx.core.view.GravityCompat
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
@@ -27,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu)
+        }
 
 
         val adapter = TabAdapter(getSupportFragmentManager())
@@ -45,7 +53,27 @@ class MainActivity : AppCompatActivity() {
         viewpager.adapter = adapter
 
         sliding_tabs.setupWithViewPager(viewpager)
+
+        nav_view.setNavigationItemSelectedListener { menuItem ->
+
+            menuItem.isChecked = true
+
+            when(menuItem.itemId){
+                R.id.notif -> {
+                    startActivity(Intent(this, NotificationActivity::class.java))
+                }
+                R.id.help -> {
+                    Toast.makeText(this, "Wallet", Toast.LENGTH_LONG).show()
+                }
+                R.id.about -> {
+                    Toast.makeText(this, "Offer", Toast.LENGTH_LONG).show()
+                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -55,24 +83,30 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        when(id){
+        return when(id){
             R.id.app_bar_search -> {
                 startActivity(Intent(this, SearchActivity::class.java))
+                true
             }
 
             R.id.notif -> {
                 startActivity(Intent(this, NotificationActivity::class.java))
+                true
             }
 
             R.id.help -> {
-
+                true
             }
 
             R.id.about -> {
-
+                true
             }
-        }
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
 
-        return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
