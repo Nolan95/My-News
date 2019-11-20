@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorMyNews</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorMyNews</item>
+        <item name="colorAccent">@color/colorSelectedTab</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

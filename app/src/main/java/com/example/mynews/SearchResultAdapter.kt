@@ -25,7 +25,7 @@ class SearchResultAdapter(private var items: List<Doc> = listOf(),
 
         holder.section.text = item.section_name
         holder.title.text = item.snippet
-        holder.date.text = formatDate(item.pub_date)
+        holder.date.text = item.pub_date.formatDate()
 
         item.multimedia?.let {
             if(item.multimedia.isNotEmpty()) Picasso.get().load(BASE_URL+item.multimedia.first().url).into(holder.image)

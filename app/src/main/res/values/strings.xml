@@ -20,7 +20,6 @@
     <string name="search_result">Search Result</string>
     <string name="notifications">Notifications</string>
     <string name="enabe_notif">Enable Notifications(once per day)</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -36,4 +35,7 @@
     <string name="menu_send">Send</string>
     <string name="notif_swith">Enable notifications (once per day)</string>
     <string name="camera">Camera</string>
+    <string name="msg_token_fmt">FCM Token: %s</string>
+    <string name="takephoto">Take Photo</string>
+    <string name="uploadPhoto">Upload Photo</string>
 </resources>

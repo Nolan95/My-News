@@ -3,36 +3,24 @@ package com.example.mynews
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.example.mynews.repository.NewsRepository
 import com.example.mynews.repository.api.ApiCaller
-import com.example.mynews.repository.data.Result
-import com.example.mynews.repository.db.AppDatabase
 import com.example.mynews.repository.roomdata.SharedArticle
 import com.example.mynews.repository.roomdata.TopArticles
 import com.example.mynews.utils.*
 import com.example.mynews.viewmodel.NewsViewModel
-import com.example.mynews.workmanager.DbPopulateWorker
-import com.google.android.gms.common.api.Api
 import io.reactivex.disposables.Disposable
-import java.util.concurrent.TimeUnit
 
 
 /**

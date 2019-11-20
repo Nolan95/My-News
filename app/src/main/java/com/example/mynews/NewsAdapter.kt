@@ -1,14 +1,13 @@
 package com.example.mynews
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mynews.repository.data.Result
 import com.example.mynews.repository.roomdata.SharedArticle
 import com.example.mynews.repository.roomdata.TopArticles
-import com.squareup.picasso.Picasso
 import com.example.mynews.utils.*
+import android.net.Uri
+
 
 
 class NewsAdapter(private var items: List<Any> = listOf(),
@@ -27,19 +26,22 @@ class NewsAdapter(private var items: List<Any> = listOf(),
             is TopArticles -> {
                 holder.section.text = item.section
                 holder.title.text = item.title
-                holder.date.text = formatDate(item.published_date)
+                holder.date.text = item.published_date.formatDate()
                 item.multimedia?.let {
-                    if(item.multimedia.isNotEmpty()) Picasso.get().load(item.multimedia.first().url).into(holder.image)
+                    var uri: Uri = Uri.parse(DEFAULT_IMAGE_LINK)
+                    if(item.multimedia.isNotEmpty()) uri = Uri.parse(item.multimedia.first().url)
+                    holder.image.setImageURI (uri)
                 }
             }
 
             is SharedArticle -> {
                 holder.section.text = item.section
                 holder.title.text = item.title
-                holder.date.text = formatDate(item.published_date)
+                holder.date.text = item.published_date.formatDate()
                 item.medias?.let {
-                    if(item.medias.isNotEmpty()) Picasso.get().load(item.medias.first().mediaMetadata.first().url).into(holder.image)
-                }
+                    var uri: Uri = Uri.parse(DEFAULT_IMAGE_LINK)
+                    if(item.medias.isNotEmpty()) uri = Uri.parse(item.medias.first().mediaMetadata.first().url)
+                    holder.image.setImageURI (uri)                }
             }
         }
 

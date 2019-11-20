@@ -2,6 +2,7 @@ package com.example.mynews.repository.api
 
 import com.example.mynews.repository.api.NewsApiService
 import com.example.mynews.repository.data.DataResults
+import com.example.mynews.repository.data.NotificationServerResponse
 import com.example.mynews.repository.data.SearchData
 import com.example.mynews.utils.API_KEY
 import io.reactivex.Observable
@@ -14,6 +15,10 @@ class ApiCaller {
 
     private val newsApiService by lazy {
         NewsApiService.create()
+    }
+
+    private val notificationApiService by lazy {
+        NotificationApiService.create()
     }
 
     fun fetchTopStories(section: String): Observable<DataResults> {
@@ -30,6 +35,10 @@ class ApiCaller {
 
     fun getNotified(q: String, fq: List<String>): Single<SearchData> {
         return newsApiService.getNews(q, fq, API_KEY)
+    }
+
+    fun sendTokenToServer(token: String): Observable<NotificationServerResponse>{
+        return notificationApiService.sendTokenToServer(Token(token))
     }
 
 }

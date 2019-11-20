@@ -91,8 +91,8 @@ class SearchActivity : AppCompatActivity() {
                     val intent = Intent(this, SearchResultActivity::class.java)
                     intent.putExtra(QUERY, query.text.toString())
                     intent.putExtra(FQ, checklist)
-                    intent.putExtra(END_DATE, formatDate(end_date.text.toString()))
-                    intent.putExtra(BEGIN_DATE, formatDate(begin_date.text.toString()))
+                    intent.putExtra(END_DATE, end_date.text.toString().formatDate())
+                    intent.putExtra(BEGIN_DATE, begin_date.text.toString().formatDate())
                     Log.i("date", "${begin_date.text}")
                     startActivity(intent)
                 }else{

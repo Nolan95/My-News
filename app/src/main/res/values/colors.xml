@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorMyNews">#16aec9</color>
     <color name="colorToolbar">#FFFFFF</color>
+    <color name="colorSelectedTab">#f5e417</color>
 </resources>
