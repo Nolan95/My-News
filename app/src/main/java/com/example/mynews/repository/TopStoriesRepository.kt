@@ -1,18 +1,16 @@
 package com.example.mynews.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.repository.data.DataResults
 import com.example.mynews.repository.data.MultimediaX
-import com.example.mynews.repository.data.Result
 import com.example.mynews.repository.db.*
 import com.example.mynews.repository.roomdata.MultimediaXEntity
 import com.example.mynews.repository.roomdata.TopArticles
 import io.reactivex.Observable
-import androidx.lifecycle.MediatorLiveData
-
+import androidx.paging.DataSource
+import com.example.mynews.repository.roomdata.TopArticlesAndMultimediaX
+import io.reactivex.schedulers.Schedulers
 
 
 class TopStoriesRepository(val apiCaller: ApiCaller,
@@ -21,25 +19,17 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
 
 
     //function to populate multimedia in every Articles
-    fun getAllMultimediaWithTopArticles(section: String): LiveData<List<TopArticles>> {
-        val articlesLiveData = topArticlesDao.getTopStories(section)
-        Log.w("section" ,"${section}")
-        return Transformations.switchMap<List<TopArticles>, List<TopArticles>>(articlesLiveData) { inputTopArticles ->
-            val topArticlesMediatorLiveData = MediatorLiveData<List<TopArticles>>()
-            for (article in inputTopArticles) {
-                topArticlesMediatorLiveData.addSource(multimediaXDao.getMultimediax(article.id)) { multimedia ->
-                    article.multimedia = multimedia
-                    topArticlesMediatorLiveData.postValue(inputTopArticles)
-                }
-            }
-
-            topArticlesMediatorLiveData
-        }
+    fun getAllMultimediaWithTopArticles(section: String): DataSource.Factory<Int, TopArticlesAndMultimediaX> {
+        return  topArticlesDao.getTopStories(section)
     }
 
 
     fun getFromApiTopStories(section: String): Observable<DataResults> {
-        return apiCaller.fetchTopStories(section)
+        val dataSource = apiCaller.fetchTopStories(section)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+
+        return dataSource
     }
 
 
@@ -59,8 +49,8 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
                     topArticlesId = id
                 }
 
-
-                multimedias.add(multimedia)
+                multimediaXDao.insertMultimediax(multimedia)
+                //multimedias.add(multimedia)
             }
         }
 
@@ -78,8 +68,8 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
             article.url = r.url
             article.type = results.section
             var id = topArticlesDao.insertTopStories(article)
-            var multimedia = rmultimediaToEntity(r.multimedia, id)
-            multimediaXDao.insertAllMultimediax(multimedia)
+            rmultimediaToEntity(r.multimedia, id)
+            //multimediaXDao.insertAllMultimediax(multimedia)
         }
     }
 

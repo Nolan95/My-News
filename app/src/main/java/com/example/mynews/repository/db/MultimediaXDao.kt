@@ -16,4 +16,7 @@ interface MultimediaXDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllMultimediax(multimediax: List<MultimediaXEntity>?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMultimediax(multimediax: MultimediaXEntity)
 }

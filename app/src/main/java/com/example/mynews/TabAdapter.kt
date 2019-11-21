@@ -19,11 +19,6 @@ class TabAdapter internal constructor(fm: FragmentManager) : FragmentStatePagerA
         mFragmentTitleList.add(title)
     }
 
-    /**
-     * If you want to only show icons, return null from this method.
-     * @param position
-     * @return
-     */
     override fun getPageTitle(position: Int): CharSequence? {
         return mFragmentTitleList[position]
     }

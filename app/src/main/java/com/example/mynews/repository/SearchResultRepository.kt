@@ -25,14 +25,14 @@ class SearchResultRepository(val apiCaller: ApiCaller,
 
 
     //function to populate multimedia in every Articles
-    fun getAllMultimediaWithDocs(): List<DocEntity> {
+    /*fun getAllMultimediaWithDocs(): List<DocEntity> {
         val docs = docDao.getAllDocs()
         for(article in docs){
-            article.multimedia = multimediaDao.getAllMultimedia(article.docId)
+            article. = multimediaDao.getAllMultimedia(article.docId)
         }
 
         return docs
-    }
+    }*/
 
 
     fun getFromApiSearchResult(q: String, fq: List<String>): Observable<SearchData> {

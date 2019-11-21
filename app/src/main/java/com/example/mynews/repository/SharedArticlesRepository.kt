@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
+import androidx.paging.DataSource
 import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.repository.data.DataResults
 import com.example.mynews.repository.data.MediaX
@@ -11,6 +12,7 @@ import com.example.mynews.repository.data.MultimediaX
 import com.example.mynews.repository.db.*
 import com.example.mynews.repository.roomdata.*
 import io.reactivex.Observable
+
 
 class SharedArticlesRepository(val apiCaller: ApiCaller,
                                val sharedArticleDao: SharedArticleDao,
@@ -39,35 +41,13 @@ class SharedArticlesRepository(val apiCaller: ApiCaller,
 //    }
 
     //function to populate Mediameta in every Medias
-    fun getAllMetaWithMedia(id: Long): LiveData<List<MediaEntity>> {
-        val mediaLiveData = mediaDao.getMedias(id)
-        return Transformations.switchMap<List<MediaEntity>, List<MediaEntity>>(mediaLiveData) { inputMediaEntity ->
-            val mediaMediatorLiveData = MediatorLiveData<List<MediaEntity>>()
-            for (media in inputMediaEntity) {
-                mediaMediatorLiveData.addSource(mediaMetaDao.getMediaMeta(media.mediaId)) { meta ->
-                    media.mediaMetadata = meta
-                    mediaMediatorLiveData.postValue(inputMediaEntity)
-                }
-            }
-
-            mediaMediatorLiveData
-        }
+    /*fun getAllMetaWithMedia(id: Long): DataSource.Factory<Int, MediaAndMeta> {
+        return mediaDao.getMedias(id)
     }
-
+*/
     //function to populate Medias in every Artciles
-    fun getAllArticleWithMedia(): LiveData<List<SharedArticle>>{
-        val articles = sharedArticleDao.getSharedArticles()
-        return Transformations.switchMap<List<SharedArticle>, List<SharedArticle>>(articles) { inputArticles ->
-            val articleMediatorLiveData = MediatorLiveData<List<SharedArticle>>()
-            for (article in inputArticles) {
-                articleMediatorLiveData.addSource(getAllMetaWithMedia(article.sharedArticleId)) { medias ->
-                    article.medias = medias
-                    articleMediatorLiveData.postValue(inputArticles)
-                }
-            }
-
-            articleMediatorLiveData
-        }
+    fun getAllArticleWithMedia(): DataSource.Factory<Int, SharedArticleAndMedia>{
+        return sharedArticleDao.getSharedArticles()
     }
 
     fun getFromApiMostPopular(period: Int): Observable<DataResults> {

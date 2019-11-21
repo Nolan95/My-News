@@ -12,7 +12,8 @@ import com.example.mynews.repository.roomdata.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = arrayOf(TopArticles::class, DocEntity::class, MediaMetaEntity::class, MediaEntity::class, MultimediaEntity::class, MultimediaXEntity::class,
+@Database(entities = arrayOf(TopArticles::class, DocEntity::class, MediaMetaEntity::class,
+    MediaEntity::class, MultimediaEntity::class, MultimediaXEntity::class,
     SharedArticle::class), version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun topArticlesDao(): TopArticlesDao
@@ -22,7 +23,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sharedArticleDao(): SharedArticleDao
     abstract fun docDao(): DocDao
     abstract fun multimediaDao(): MultimediaDao
-
     companion object {
 
         private var INSTANCE: AppDatabase? = null

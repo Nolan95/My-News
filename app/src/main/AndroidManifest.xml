@@ -19,7 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".CameraActivity"></activity>
         <activity android:name=".NotificationActivity" />
         <activity android:name=".SearchResultActivity" />
         <activity
@@ -44,14 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+        <activity android:name=".MainActivity" />
         <service
             android:name=".services.FirebaseNotificationService"
             android:exported="false">
@@ -72,6 +64,7 @@
         </provider>
 
         <service android:name=".services.UploadImageFirebaseService"></service>
+        <service android:name="com.example.firebaseupload.services.UploadFirebaseService"></service>
     </application>
 
 </manifest>

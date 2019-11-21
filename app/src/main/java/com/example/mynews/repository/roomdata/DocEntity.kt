@@ -8,7 +8,8 @@ import com.example.mynews.repository.data.Multimedia
 
 @Entity(tableName = "docs")
 data class DocEntity(
-    @PrimaryKey var docId: Long = 0,
+    @PrimaryKey(autoGenerate = true)
+    var docId: Long = 0,
     var pub_date: String = "",
     var section_name: String = "",
     var snippet: String = "",
@@ -16,7 +17,5 @@ data class DocEntity(
     var subsection_name: String = "",
     var uri: String= "",
     var web_url: String = "",
-    var word_count: Int = 0,
-    @Ignore
-    var multimedia: List<MultimediaEntity> = listOf()
+    var word_count: Int = 0
 )

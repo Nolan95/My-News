@@ -3,15 +3,7 @@ package com.example.mynews.repository.roomdata
 import androidx.room.*
 import com.example.mynews.repository.data.Doc
 
-@Entity(tableName = "multimedias",
-    indices = arrayOf(Index(value=["doc_id"], unique = true)),
-    foreignKeys = arrayOf(
-    ForeignKey(
-        entity = DocEntity::class,
-        parentColumns = arrayOf("docId"),
-        childColumns = arrayOf("doc_id")
-    )
-))
+@Entity(tableName = "multimedias")
 data class MultimediaEntity(
     @PrimaryKey(autoGenerate = true)
     var multimediaId: Long = 0,

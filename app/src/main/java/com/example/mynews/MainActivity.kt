@@ -27,6 +27,9 @@ import android.graphics.Bitmap
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import com.google.android.play.core.splitinstall.SplitInstallManager
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 
@@ -34,6 +37,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 class MainActivity : AppCompatActivity() {
 
     lateinit var remoteConfig: FirebaseRemoteConfig
+    lateinit var splitInstallManager: SplitInstallManager
+    lateinit var request: SplitInstallRequest
+    val DYNAMIC_FEATURE = "camera"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,6 +70,8 @@ class MainActivity : AppCompatActivity() {
 
         sliding_tabs.setupWithViewPager(viewpager)
 
+        initDynamicModules()
+
         nav_view.setNavigationItemSelectedListener { menuItem ->
 
             menuItem.isChecked = true
@@ -78,7 +87,11 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Offer", Toast.LENGTH_LONG).show()
                 }
                 R.id.camera -> {
-                    startActivity(Intent(this, CameraActivity::class.java))
+                    if(!isDynamicFeatureInstalled(DYNAMIC_FEATURE)){
+                        downloadFeature()
+                    }else{
+                        startActivity(Intent().setClassName(this, "com.example.camera.CameraActivity"))
+                    }
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -112,6 +125,29 @@ class MainActivity : AppCompatActivity() {
         fecthFromFirebaseRemoteConfig()
 
 
+    }
+
+    private fun downloadFeature() {
+        splitInstallManager.startInstall(request)
+            .addOnFailureListener{
+
+            }
+            .addOnSuccessListener {
+                startActivity(Intent().setClassName(this, "com.example.camera.CameraActivity"))
+            }
+            .addOnCompleteListener {
+
+            }
+    }
+
+    private fun isDynamicFeatureInstalled(feature: String): Boolean = splitInstallManager.installedModules.contains(feature)
+
+    private fun initDynamicModules() {
+        splitInstallManager = SplitInstallManagerFactory.create(this)
+        request = SplitInstallRequest
+            .newBuilder()
+            .addModule(DYNAMIC_FEATURE)
+            .build()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

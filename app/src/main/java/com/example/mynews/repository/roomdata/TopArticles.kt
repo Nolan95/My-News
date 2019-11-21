@@ -18,6 +18,5 @@ data class TopArticles(
     @PrimaryKey(autoGenerate = true) var id: Long = 0,
     var views: Int = 0,
     var source: String = "",
-    var type: String = "",
-    @Ignore var multimedia: List<MultimediaXEntity> = listOf()
+    var type: String = ""
 )

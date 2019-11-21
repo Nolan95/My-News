@@ -18,7 +18,5 @@ data class SharedArticle(
     var url: String = "",
     var id: Long = 0,
     var views: Int = 0,
-    var source: String = "",
-    @Ignore var medias: List<MediaEntity> = listOf()
-
+    var source: String = ""
 )

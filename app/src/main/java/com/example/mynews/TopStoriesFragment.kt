@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.example.mynews.repository.NewsRepository
 import com.example.mynews.repository.api.ApiCaller
 import com.example.mynews.repository.roomdata.SharedArticle
 import com.example.mynews.repository.roomdata.TopArticles
+import com.example.mynews.repository.roomdata.TopArticlesAndMultimediaX
 import com.example.mynews.utils.*
 import com.example.mynews.viewmodel.NewsViewModel
 import io.reactivex.disposables.Disposable
@@ -26,7 +28,7 @@ import io.reactivex.disposables.Disposable
 /**
  * A simple [Fragment] subclass.
  */
-class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
+class TopStoriesFragment : Fragment(){
 
     private var linearLayoutManager: LinearLayoutManager? = null
 
@@ -37,9 +39,11 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
 
     private lateinit var recyclerView: RecyclerView
 
-    var news: MutableList<Any> = mutableListOf()
+    var news: MutableList<TopArticles> = mutableListOf()
 
     private lateinit var newsAdapter: NewsAdapter
+
+    private lateinit var sharedArticleAdapter: SharedArticleAdapter
 
     private lateinit var swipe: SwipeRefreshLayout
 
@@ -77,9 +81,8 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
         newsViewModel = ViewModelProviders.of(this).get(NewsViewModel::class.java)
         newsRepository = NewsRepository(newsViewModel.db)
 
-
+        newsAdapter = NewsAdapter(){ item -> onItemClick(item)}
         setTabContent()
-        newsAdapter = NewsAdapter(news, this)
         recyclerView.apply {
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
@@ -103,7 +106,6 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
             val tabTitle = arguments!!.getString(TABTITLE)
             when(tabTitle){
                 TOPSTORIES -> topStories("home")
-                MOSTPOPULAR -> mostPopular(7)
                 BUSINESS -> topStories("business")
 
             }
@@ -114,51 +116,27 @@ class TopStoriesFragment : Fragment(), NewsAdapter.OnItemClicked {
 
     private fun topStories(section: String){
 
-        newsViewModel.allStoriesBySection(section).observe(this, Observer { stories ->
-            // Update the cached copy of the words in the adapter.
-            if(stories != null){
-                replaceItems(stories)
-            }else{
-                Toast.makeText(context, "Stories vides", Toast.LENGTH_LONG).show()
-            }
-        })
+        newsViewModel.allStoriesBySection(section).observe(this, Observer { newsAdapter.submitList(it) })
 
         newsViewModel.newsRepository.saveFromApiToDb(section)
     }
 
 
     private fun mostPopular(period: Int){
-        newsViewModel.mostPopular().observe(this, Observer { stories ->
-            // Update the cached copy of the words in the adapter.
-            if(stories != null){
-                replaceItems(stories)
-            }else{
-                Toast.makeText(context, "Stories vides", Toast.LENGTH_LONG).show()
-            }
-        })
+        newsViewModel.mostPopular().observe(this, Observer {})
 
         newsViewModel.newsRepository.saveFromApiToDbMostPopular(period)
     }
 
+     fun onItemClick(item: TopArticlesAndMultimediaX) {
 
-    override fun onItemClick(item: Any) {
-        when(item){
-            is TopArticles -> {
-                context?.startActivity(Intent(context, DetailActivity::class.java)
-                    .putExtra(URL, item.url)
-                    .putExtra(TITLE, item.title))
-            }
-
-            is SharedArticle -> {
-                context?.startActivity(Intent(context, DetailActivity::class.java)
-                    .putExtra(URL, item.url)
-                    .putExtra(TITLE, item.title))
-            }
-        }
+        context?.startActivity(Intent(context, DetailActivity::class.java)
+            .putExtra(URL, item.article?.url)
+            .putExtra(TITLE, item.article?.title))
 
     }
 
-    fun replaceItems(items: List<Any>) {
+    fun replaceItems(items: List<TopArticles>) {
         if(items.isNotEmpty()){
             news.clear()
             news.addAll(items)
