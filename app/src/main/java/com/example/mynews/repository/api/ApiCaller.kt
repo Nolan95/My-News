@@ -21,15 +21,15 @@ class ApiCaller {
         NotificationApiService.create()
     }
 
-    fun fetchTopStories(section: String): Observable<DataResults> {
+    suspend fun fetchTopStories(section: String): DataResults{
         return  newsApiService.getTopStories(section, API_KEY)
     }
 
-    fun  fetchMostPopular(period: Int): Observable<DataResults> {
+    suspend fun  fetchMostPopular(period: Int): DataResults {
         return newsApiService.getMostPopularNews(period, API_KEY)
     }
 
-    fun fetchSearchResult(q: String, fq: List<String>): Observable<SearchData> {
+    suspend fun fetchSearchResult(q: String, fq: List<String>): SearchData {
         return newsApiService.getSearch(q, fq, API_KEY)
     }
 

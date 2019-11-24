@@ -3,7 +3,7 @@ package com.example.mynews.repository.roomdata
 import androidx.room.*
 import com.example.mynews.repository.data.Doc
 
-@Entity(tableName = "multimediax")
+@Entity(tableName = "multimediax", indices = arrayOf(Index(value = ["multimediaxId"], unique = true)))
 data class MultimediaXEntity(
     @PrimaryKey(autoGenerate = true)
     var multimediaxId: Int = 0,

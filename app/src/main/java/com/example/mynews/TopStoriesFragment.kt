@@ -81,7 +81,7 @@ class TopStoriesFragment : Fragment(){
         newsViewModel = ViewModelProviders.of(this).get(NewsViewModel::class.java)
         newsRepository = NewsRepository(newsViewModel.db)
 
-        newsAdapter = NewsAdapter(){ item -> onItemClick(item)}
+        newsAdapter = NewsAdapter{ item -> onItemClick(item)}
         setTabContent()
         recyclerView.apply {
             setHasFixedSize(true)
@@ -118,7 +118,7 @@ class TopStoriesFragment : Fragment(){
 
         newsViewModel.allStoriesBySection(section).observe(this, Observer { newsAdapter.submitList(it) })
 
-        newsViewModel.newsRepository.saveFromApiToDb(section)
+        //newsViewModel.newsRepository.saveFromApiToDb(section)
     }
 
 
@@ -128,11 +128,11 @@ class TopStoriesFragment : Fragment(){
         newsViewModel.newsRepository.saveFromApiToDbMostPopular(period)
     }
 
-     fun onItemClick(item: TopArticlesAndMultimediaX) {
+     fun onItemClick(item: TopArticles) {
 
         context?.startActivity(Intent(context, DetailActivity::class.java)
-            .putExtra(URL, item.article?.url)
-            .putExtra(TITLE, item.article?.title))
+            .putExtra(URL, item.url)
+            .putExtra(TITLE, item.title))
 
     }
 

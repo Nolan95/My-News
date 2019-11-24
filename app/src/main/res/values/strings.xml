@@ -39,4 +39,5 @@
     <string name="takephoto">Take Photo</string>
     <string name="uploadPhoto">Upload Photo</string>
     <string name="title_camera">Camera</string>
+    <string name="title_dynamicfeature">Module Test</string>
 </resources>

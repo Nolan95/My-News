@@ -52,6 +52,12 @@ class UploadFirebaseService : IntentService("UploadFirebaseService") {
             intent.putExtra("result_code", Activity.RESULT_OK)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             Log.i("OnSuccess", "Good thing from another module")
+        }.addOnProgressListener {
+            val progress = (100.0 * it.bytesTransferred) / it.totalByteCount
+            val intent = Intent(ACTION)
+            intent.putExtra("progress", progress)
+            sendBroadcast(intent)
+            Log.i("OnProgress", "Upload is $progress% done")
         }
 
     }

@@ -19,17 +19,14 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
 
 
     //function to populate multimedia in every Articles
-    fun getAllMultimediaWithTopArticles(section: String): DataSource.Factory<Int, TopArticlesAndMultimediaX> {
+    fun getAllMultimediaWithTopArticles(section: String): DataSource.Factory<Int, TopArticles> {
         return  topArticlesDao.getTopStories(section)
     }
 
 
-    fun getFromApiTopStories(section: String): Observable<DataResults> {
-        val dataSource = apiCaller.fetchTopStories(section)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-
-        return dataSource
+    suspend fun getFromApiTopStories(section: String): DataResults {
+        Log.i("Api", "Calling Api...")
+       return apiCaller.fetchTopStories(section)
     }
 
 
@@ -49,8 +46,8 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
                     topArticlesId = id
                 }
 
-                multimediaXDao.insertMultimediax(multimedia)
-                //multimedias.add(multimedia)
+                //multimediaXDao.insertMultimediax(multimedia)
+                multimedias.add(multimedia)
             }
         }
 
@@ -68,8 +65,8 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
             article.url = r.url
             article.type = results.section
             var id = topArticlesDao.insertTopStories(article)
-            rmultimediaToEntity(r.multimedia, id)
-            //multimediaXDao.insertAllMultimediax(multimedia)
+            val multimedia = rmultimediaToEntity(r.multimedia, id)
+            multimediaXDao.insertAllMultimediax(multimedia)
         }
     }
 

@@ -12,9 +12,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.firebaseupload.services.ACTION
 import com.example.firebaseupload.services.IMG_LINK
@@ -30,7 +32,6 @@ class CameraActivity : AppCompatActivity() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     var currentPhotoPath: String = ""
-    lateinit var uploadPic: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
@@ -39,8 +40,6 @@ class CameraActivity : AppCompatActivity() {
         title = getString(com.example.mynews.R.string.camera)
 
         Log.i("Camera Module", "I am in new Module")
-
-        uploadPic = findViewById(R.id.uploadPic)
 
         uploadPic.isEnabled = false
 
@@ -52,6 +51,7 @@ class CameraActivity : AppCompatActivity() {
         }
         uploadPic.setOnClickListener {
             startService(Intent(this, UploadFirebaseService::class.java).putExtra(IMG_LINK, currentPhotoPath))
+            progressBar.visibility = View.VISIBLE
         }
     }
 
@@ -116,8 +116,10 @@ class CameraActivity : AppCompatActivity() {
     private inner class UploadBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val resultCode = intent.getIntExtra("result_code", RESULT_CANCELED)
+            val progress = intent.getDoubleExtra("progress", 0.0)
             Log.i("Broadcast", "I am here")
             if (resultCode == RESULT_OK) {
+                progressBar.visibility = View.GONE
                 Toast.makeText(context, "Upload terminé", Toast.LENGTH_SHORT).show()
             }
 

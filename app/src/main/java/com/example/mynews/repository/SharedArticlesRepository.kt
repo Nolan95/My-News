@@ -50,7 +50,7 @@ class SharedArticlesRepository(val apiCaller: ApiCaller,
         return sharedArticleDao.getSharedArticles()
     }
 
-    fun getFromApiMostPopular(period: Int): Observable<DataResults> {
+    suspend fun getFromApiMostPopular(period: Int): DataResults{
         return apiCaller.fetchMostPopular(period)
     }
 

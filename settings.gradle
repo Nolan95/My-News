@@ -1,2 +1,2 @@
-include ':app', ':camera', ':firebaseupload'
+include ':app', ':camera', ':firebaseupload', ':dynamicfeature'
 rootProject.name='MyNews'

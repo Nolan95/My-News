@@ -9,7 +9,7 @@ import com.example.mynews.repository.roomdata.TopArticles
 interface TopArticlesDao {
     @Transaction
     @Query("SELECT DISTINCT * FROM toparticles WHERE type = :section_name ORDER BY published_date DESC")
-    fun getTopStories(section_name: String): DataSource.Factory<Int, TopArticlesAndMultimediaX>
+    fun getTopStories(section_name: String): DataSource.Factory<Int, TopArticles>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllTopStories(articles: List<TopArticles>)

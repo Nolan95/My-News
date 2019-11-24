@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -14,10 +16,14 @@ import com.example.mynews.repository.data.Doc
 import com.example.mynews.repository.db.AppDatabase
 import com.example.mynews.repository.roomdata.DocEntity
 import com.example.mynews.utils.*
+import com.example.mynews.viewmodel.NewsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClicked {
 
@@ -34,7 +40,10 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
 
     private lateinit var swipe: SwipeRefreshLayout
 
-    lateinit var newsRepository: NewsRepository
+    //lateinit var newsRepository: NewsRepository
+
+    private lateinit var newsViewModel: NewsViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +52,9 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
         recyclerView = findViewById(R.id.recycler)
         title = getString(R.string.search_result)
         toolBarConfig()
-        val db = AppDatabase.getDatabase(this)
-        db?.let {
-            newsRepository = NewsRepository(db)
-        }
+        //val db = AppDatabase.getDatabase(this)
+        newsViewModel = ViewModelProviders.of(this).get(NewsViewModel::class.java)
+        //newsRepository = NewsRepository(newsViewModel.db)
         setContent()
         searchResultAdapter = SearchResultAdapter(news, this)
         recyclerView.apply {
@@ -78,14 +86,11 @@ class SearchResultActivity : AppCompatActivity(), SearchResultAdapter.OnItemClic
         val beginDate = intent.getStringExtra(BEGIN_DATE)
         val endDate = intent.getStringExtra(END_DATE)
         Log.i("Date", "${beginDate}")
-        disposable = newsRepository.searchResultFromApi(q, fq)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                replaceItems(it.response.docs)
-            },
-                { Log.i("Stories", "${it.message}")}
-            )
+
+        newsViewModel.searchData(q,fq).observe(this, Observer { searchResult ->
+            replaceItems(searchResult.response.docs)
+        })
+
     }
 
     private fun replaceItems(docs: List<Doc>) {

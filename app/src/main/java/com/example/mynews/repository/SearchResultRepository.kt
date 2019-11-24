@@ -35,7 +35,7 @@ class SearchResultRepository(val apiCaller: ApiCaller,
     }*/
 
 
-    fun getFromApiSearchResult(q: String, fq: List<String>): Observable<SearchData> {
+    suspend fun getFromApiSearchResult(q: String, fq: List<String>): SearchData {
         return apiCaller.fetchSearchResult(q, fq)
     }
 

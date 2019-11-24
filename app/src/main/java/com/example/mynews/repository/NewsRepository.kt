@@ -2,12 +2,10 @@ package com.example.mynews.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.mynews.repository.api.ApiCaller
-import com.example.mynews.repository.data.DataResults
 import com.example.mynews.repository.data.SearchData
 import com.example.mynews.repository.db.*
 import com.example.mynews.repository.roomdata.*
@@ -33,19 +31,19 @@ class NewsRepository(val db: AppDatabase) {
     val searchResultRepository = SearchResultRepository(apiCaller, docDao, multimediaDao)
 
 
-    fun allStories(section: String): LiveData<PagedList<TopArticlesAndMultimediaX>>{
+    fun allStories(section: String): LiveData<PagedList<TopArticles>>{
         Log.i("Db Stories", "I am here")
 
         val factory = topArticlesDao.getTopStories(section)
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
-            .setPageSize(50)
+            .setPageSize(2)
             .build()
 
-        val boundary = BoundaryCondition(topStoriesRepository, section)
+        val boundary = TopStoriesBoundaryCallBack(topStoriesRepository, section)
 
-        return LivePagedListBuilder<Int, TopArticlesAndMultimediaX>(factory, config)
+        return LivePagedListBuilder<Int, TopArticles>(factory, 2)
             .setBoundaryCallback(boundary)
             .build()
     }
@@ -63,18 +61,10 @@ class NewsRepository(val db: AppDatabase) {
     }
 
     fun saveFromApiToDbMostPopular(period: Int) {
-        sharedArticlesRepository.getFromApiMostPopular(period)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe({
-                sharedArticlesRepository.storeResultInDbMostPopular(it)
-            },
-                { Log.i("Stories", "${it.message}")}
-            )
 
     }
 
-    fun searchResultFromApi(q: String, fq: List<String>): Observable<SearchData> {
+    suspend fun searchResultFromApi(q: String, fq: List<String>): SearchData {
         return searchResultRepository.getFromApiSearchResult(q,fq)
     }
 

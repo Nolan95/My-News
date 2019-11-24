@@ -1,12 +1,9 @@
 package com.example.mynews.repository.roomdata
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.example.mynews.repository.data.MultimediaX
 
-@Entity(tableName = "toparticles")
+@Entity(tableName = "toparticles", indices = [Index(value = ["id", "title"], unique = true)])
 data class TopArticles(
     var published_date: String = "",
     var section: String = "",
