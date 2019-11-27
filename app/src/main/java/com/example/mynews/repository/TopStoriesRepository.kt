@@ -11,6 +11,9 @@ import io.reactivex.Observable
 import androidx.paging.DataSource
 import com.example.mynews.repository.roomdata.TopArticlesAndMultimediaX
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 
 class TopStoriesRepository(val apiCaller: ApiCaller,
@@ -26,7 +29,9 @@ class TopStoriesRepository(val apiCaller: ApiCaller,
 
     suspend fun getFromApiTopStories(section: String): DataResults {
         Log.i("Api", "Calling Api...")
-       return apiCaller.fetchTopStories(section)
+        return GlobalScope.async(Dispatchers.IO) {
+            apiCaller.fetchTopStories(section)
+        }.await()
     }
 
 

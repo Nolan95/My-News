@@ -5,6 +5,7 @@ import com.example.mynews.repository.roomdata.TopArticles
 import com.example.mynews.repository.roomdata.TopArticlesAndMultimediaX
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class TopStoriesBoundaryCallBack(private val topStoriesRepository: TopStoriesRepository,
@@ -34,7 +35,7 @@ class TopStoriesBoundaryCallBack(private val topStoriesRepository: TopStoriesRep
 
         isRequestInProgress = true
 
-        CoroutineScope(Dispatchers.IO).launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val result = topStoriesRepository.getFromApiTopStories(section)
             topStoriesRepository.storeResultInDbTopStories(result)
             lastRequestedPage++

@@ -12,6 +12,9 @@ import com.example.mynews.repository.data.MultimediaX
 import com.example.mynews.repository.db.*
 import com.example.mynews.repository.roomdata.*
 import io.reactivex.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 
 class SharedArticlesRepository(val apiCaller: ApiCaller,
@@ -51,7 +54,9 @@ class SharedArticlesRepository(val apiCaller: ApiCaller,
     }
 
     suspend fun getFromApiMostPopular(period: Int): DataResults{
-        return apiCaller.fetchMostPopular(period)
+        return GlobalScope.async(Dispatchers.IO) {
+            apiCaller.fetchMostPopular(period)
+        }.await()
     }
 
 

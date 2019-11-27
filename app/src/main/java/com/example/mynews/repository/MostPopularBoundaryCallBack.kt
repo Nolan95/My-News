@@ -4,6 +4,7 @@ import androidx.paging.PagedList
 import com.example.mynews.repository.roomdata.SharedArticleAndMedia
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MostPopularBoundaryCallBack(private val period: Int,
@@ -33,7 +34,7 @@ class MostPopularBoundaryCallBack(private val period: Int,
 
             isRequestInProgress = true
 
-            CoroutineScope(Dispatchers.IO).launch {
+            GlobalScope.launch(Dispatchers.IO){
                 val result = sharedArticlesRepository.getFromApiMostPopular(period)
                 sharedArticlesRepository.storeResultInDbMostPopular(result)
                 lastRequestedPage++

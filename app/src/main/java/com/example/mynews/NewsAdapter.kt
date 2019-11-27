@@ -60,7 +60,7 @@ class NewsAdapter(val onItemClickListener: (item: TopArticles) -> Unit) : PagedL
 
             override fun areContentsTheSame(oldItem: TopArticles,
                                             newItem: TopArticles): Boolean{
-                if(oldItem.title == newItem.title ){
+                if(oldItem.title == newItem.title && oldItem.views == newItem.views && oldItem.published_date == newItem.published_date){
                     Log.i("OldItem", "Old: ${oldItem.id} ET New: ${newItem.id}")
                     return true
                 }
