@@ -46,6 +46,7 @@ interface NewsApiService {
                 .client(client)
                 .addConverterFactory(
                     GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("https://api.nytimes.com/svc/")
                 .build()
 

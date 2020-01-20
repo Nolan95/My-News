@@ -27,11 +27,15 @@ import android.graphics.Bitmap
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.navigation.ActivityNavigator
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import kotlinx.android.synthetic.main.activity_notification.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
             when(menuItem.itemId){
                 R.id.notif -> {
-                    startActivity(Intent(this, NotificationActivity::class.java))
+
                 }
                 R.id.help -> {
                     Toast.makeText(this, "Wallet", Toast.LENGTH_LONG).show()

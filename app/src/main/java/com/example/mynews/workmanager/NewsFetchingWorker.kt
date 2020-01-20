@@ -11,6 +11,7 @@ import android.app.NotificationManager
 import android.app.NotificationChannel
 import android.content.SharedPreferences
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.mynews.R
 import com.example.mynews.repository.data.Doc
@@ -24,9 +25,13 @@ class NewsFetchingWorker(context: Context,
     val apiCaller = ApiCaller()
 
     val sharedPreferences: SharedPreferences = context.getSharedPreferences(NOTIF, Context.MODE_PRIVATE)
+
     override fun createWork(): Single<Result> {
         val query = sharedPreferences.getString(QUERY, "")
         val fq = sharedPreferences.getString(FQ, "")
+
+        Log.e("Query:", "$query")
+        Log.e("fq:", "$fq")
 
         return apiCaller.getNotified(query!!, fq?.fromStringToArray(",")!!)
             .map {

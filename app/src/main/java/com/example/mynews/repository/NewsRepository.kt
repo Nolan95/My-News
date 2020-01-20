@@ -1,18 +1,24 @@
 package com.example.mynews.repository
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.mynews.repository.api.ApiCaller
+import com.example.mynews.repository.data.DataResults
 import com.example.mynews.repository.data.SearchData
 import com.example.mynews.repository.db.*
 import com.example.mynews.repository.roomdata.*
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class NewsRepository(val db: AppDatabase) {
+class NewsRepository(val db: AppDatabase, application: Application) {
 
     val apiCaller = ApiCaller()
 
@@ -24,19 +30,19 @@ class NewsRepository(val db: AppDatabase) {
     val docDao = db.docDao()
     val multimediaDao = db.multimediaDao()
 
-    val topStoriesRepository = TopStoriesRepository(apiCaller, topArticlesDao, multimediaXDao)
+    val topStoriesRepository = TopStoriesRepository(apiCaller, topArticlesDao, multimediaXDao, application)
 
     val sharedArticlesRepository = SharedArticlesRepository(apiCaller, sharedArticleDao, mediaDao, mediaMetadataDao)
 
     val searchResultRepository = SearchResultRepository(apiCaller, docDao, multimediaDao)
 
 
-    fun allStories(section: String): LiveData<PagedList<TopArticles>>{
+    fun allStories(section: String): LiveData<List<TopArticlesAndMultimediaX>>{
         Log.i("Db Stories", "I am here")
 
-        val factory = topArticlesDao.getTopStories(section)
+        return topArticlesDao.getTopStories(section)
 
-        val config = PagedList.Config.Builder()
+        /*val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(2)
             .build()
@@ -45,7 +51,7 @@ class NewsRepository(val db: AppDatabase) {
 
         return LivePagedListBuilder<Int, TopArticles>(factory, 2)
             .setBoundaryCallback(boundary)
-            .build()
+            .build()*/
     }
 
     fun mostPopular(): DataSource.Factory<Int, SharedArticleAndMedia>{
@@ -56,8 +62,10 @@ class NewsRepository(val db: AppDatabase) {
         return sharedArticlesRepository.getAllMetaWithMedia(id)
     }*/
 
-    fun saveFromApiToDb(section: String) {
-
+    suspend fun getFromApi(section: String): DataResults {
+        return GlobalScope.async(Dispatchers.IO) {
+            topStoriesRepository.getFromApiTopStories(section)
+        }.await()
     }
 
     fun saveFromApiToDbMostPopular(period: Int) {

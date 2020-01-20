@@ -7,11 +7,12 @@ import android.net.Uri
 import android.util.Log
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mynews.repository.roomdata.TopArticles
 import com.example.mynews.repository.roomdata.TopArticlesAndMultimediaX
 
 
-class NewsAdapter(val onItemClickListener: (item: TopArticles) -> Unit) : PagedListAdapter<TopArticles, NewsViewHolder>(DIFF_CALLBACK) {
+class NewsAdapter(val items: List<TopArticlesAndMultimediaX>, val onItemClickListener: (item: TopArticles) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,25 +23,35 @@ class NewsAdapter(val onItemClickListener: (item: TopArticles) -> Unit) : PagedL
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
 
-        val item: TopArticles? = getItem(position)
+        val item: TopArticlesAndMultimediaX? = items[position]
         item?.let {
-            holder.section.text = item.section
-            holder.title.text = item.title
-            holder.date.text = item.published_date?.formatDate()
-            /*item.multimedia?.let {
+            holder.section.text = item.article?.section
+            holder.title.text = item.article?.title
+            holder.date.text = item.article?.published_date?.formatDate()
+            Log.w("Item id", "${item.article?.articleId}")
+            item.multimedia?.let {
                 var uri: Uri = Uri.parse(DEFAULT_IMAGE_LINK)
                 if(item.multimedia.isNotEmpty()) uri = Uri.parse(item.multimedia.first().url)
                 holder.image.setImageURI (uri)
-            }*/
+            }
+
+            holder.cardView.setOnClickListener{
+                onItemClickListener(item.article!!)
+            }
         }
 
-        holder.cardView.setOnClickListener{
-            onItemClickListener(item!!)
-        }
+
 
     }
 
-    companion object {
+
+    override fun getItemCount(): Int {
+        return items.size
+    }
+
+
+
+    /*companion object {
         private val DIFF_CALLBACK = object :
             DiffUtil.ItemCallback<TopArticles>() {
             // Concert details may have changed if reloaded from the database,
@@ -67,7 +78,7 @@ class NewsAdapter(val onItemClickListener: (item: TopArticles) -> Unit) : PagedL
                 return false
             }
         }
-    }
+    }*/
 
 
 }

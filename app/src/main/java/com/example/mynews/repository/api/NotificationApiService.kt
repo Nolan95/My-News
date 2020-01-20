@@ -29,7 +29,7 @@ interface NotificationApiService {
                 .client(client)
                 .addConverterFactory(
                     GsonConverterFactory.create())
-                .baseUrl("http://192.168.1.17:3000/api/v1/")
+                .baseUrl("http://192.168.1.20:3000/api/v1/")
                 .build()
 
             return retrofit.create(NotificationApiService::class.java)

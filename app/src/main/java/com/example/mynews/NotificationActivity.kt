@@ -2,21 +2,30 @@ package com.example.mynews
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.work.*
-import com.example.mynews.utils.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.mynews.extensions.fromArrayToString
+import com.example.mynews.utils.FQ
+import com.example.mynews.utils.NOTIF
+import com.example.mynews.utils.QUERY
 import com.example.mynews.workmanager.NewsFetchingWorker
+import com.example.mynews.workmanager.ReminderWorker
 import kotlinx.android.synthetic.main.activity_notification.*
 import kotlinx.android.synthetic.main.toolbar.*
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import android.widget.CompoundButton
-import com.example.mynews.extensions.fromArrayToString
 
 
 class NotificationActivity : AppCompatActivity() {
@@ -54,13 +63,8 @@ class NotificationActivity : AppCompatActivity() {
                             putString(FQ, checklist.fromArrayToString())
                        }.apply()
 
-                       // Create periodic worker with contraints & 12 hours interval
-                       val newsFetchingWorker = PeriodicWorkRequest.Builder(
-                           NewsFetchingWorker::class.java, 2, TimeUnit.MINUTES)
-                           .setConstraints(constraints)
-                           .build()
+                      ReminderWorker.runAt()
 
-                       WorkManager.getInstance().enqueue(newsFetchingWorker)
                    }else{
                        Toast.makeText(this, "Select at least one category", Toast.LENGTH_LONG).show()
                    }
@@ -91,5 +95,34 @@ class NotificationActivity : AppCompatActivity() {
             android.R.id.home -> onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+
+    fun getDuration(): Long {
+        val dat = Date()//initializes to now
+        Log.d("Date", "$dat")
+
+        val calAlarm = Calendar.getInstance()
+        Log.d("calAlarm", "$calAlarm")
+
+        val calNow = Calendar.getInstance()
+        Log.d("calNow", "$calNow")
+
+        calNow.time = dat
+        Log.d("calNow with date", "$calNow")
+
+        calAlarm.time = dat
+        Log.d("calAlarm with date", "$calAlarm")
+
+        calAlarm.set(Calendar.HOUR_OF_DAY, 13)//set the alarm time
+        calAlarm.set(Calendar.MINUTE, 30)
+        Log.d("calAlarm with set", "$calAlarm")
+
+        if (calAlarm.before(calNow)) {//if its in the past increment
+            calAlarm.add(Calendar.DATE, 1)
+        }
+
+        return calAlarm.timeInMillis - calNow.timeInMillis
+
     }
 }

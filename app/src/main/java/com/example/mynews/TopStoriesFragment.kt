@@ -39,7 +39,7 @@ class TopStoriesFragment : Fragment(){
 
     private lateinit var recyclerView: RecyclerView
 
-    var news: MutableList<TopArticles> = mutableListOf()
+    var news: MutableList<TopArticlesAndMultimediaX> = mutableListOf()
 
     private lateinit var newsAdapter: NewsAdapter
 
@@ -79,9 +79,9 @@ class TopStoriesFragment : Fragment(){
         recyclerView = view.findViewById(R.id.recycler)
         swipe = view.findViewById(R.id.swipe)
         newsViewModel = ViewModelProviders.of(this).get(NewsViewModel::class.java)
-        newsRepository = NewsRepository(newsViewModel.db)
+        //newsRepository = NewsRepository(newsViewModel.db, application)
 
-        newsAdapter = NewsAdapter{ item -> onItemClick(item)}
+        newsAdapter = NewsAdapter(news){ item -> onItemClick(item)}
         setTabContent()
         recyclerView.apply {
             setHasFixedSize(true)
@@ -116,16 +116,17 @@ class TopStoriesFragment : Fragment(){
 
     private fun topStories(section: String){
 
-        newsViewModel.allStoriesBySection(section).observe(this, Observer { newsAdapter.submitList(it) })
 
-        //newsViewModel.newsRepository.saveFromApiToDb(section)
+        newsViewModel.saveFromApiToDb(section)
+
+        newsViewModel.allStoriesBySection(section).observe(this, Observer { replaceItems(it) })
     }
 
 
     private fun mostPopular(period: Int){
-        newsViewModel.mostPopular().observe(this, Observer {})
+        //newsViewModel.mostPopular().observe(this, Observer {})
 
-        newsViewModel.newsRepository.saveFromApiToDbMostPopular(period)
+        //newsViewModel.newsRepository.saveFromApiToDbMostPopular(period)
     }
 
      fun onItemClick(item: TopArticles) {
@@ -136,7 +137,7 @@ class TopStoriesFragment : Fragment(){
 
     }
 
-    fun replaceItems(items: List<TopArticles>) {
+    fun replaceItems(items: List<TopArticlesAndMultimediaX>) {
         if(items.isNotEmpty()){
             news.clear()
             news.addAll(items)
